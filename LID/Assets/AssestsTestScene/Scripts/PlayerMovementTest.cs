@@ -46,7 +46,7 @@ public class PlayerMovementTest : MonoBehaviour
     void Start()
     {
         rbPlayer = gameObject.GetComponent<Rigidbody>();
-        gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+        
     }
 
     // Update is called once per frame
