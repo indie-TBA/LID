@@ -32,21 +32,30 @@ public class PlayerMovementTest : MonoBehaviour
     //}
 
     Rigidbody rbPlayer;
-    public float fMaxSpeed = 10.0f;
-    public float fSpeedMag = 5.0f;
-    public float fSpeedBoost = 2.0f;
+    [SerializeField]
+    float fMaxSpeed = 10.0f;
+    [SerializeField]
+    float fSpeedMag = 5.0f;
+    [SerializeField]
+    float fSpeedBoost = 2.0f;
     float fYAngle;
     float fMouseX;
     float fMouseY;
     Vector3 vec3MoveDirection;
-    public GameObject gobjCamera;
 
+    [SerializeField]
+    GameObject gobjCamera;
 
+    [SerializeField]
+    GameObject gobjPlayerHead;
+
+    Animator _animator;
 
     void Start()
     {
         rbPlayer = gameObject.GetComponent<Rigidbody>();
-        gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+        gameObject.transform.position = transform.position;
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -54,10 +63,11 @@ public class PlayerMovementTest : MonoBehaviour
     {
 
         //Player Movement========================================
-        vec3MoveDirection = new Vector3(Mathf.Sin(gameObject.transform.rotation.eulerAngles.y * Mathf.Deg2Rad), 0.0f, Mathf.Cos(gameObject.transform.rotation.eulerAngles.y * Mathf.Deg2Rad)).normalized;
-
+        //vec3MoveDirection = new Vector3(Mathf.Sin(gameObject.transform.rotation.eulerAngles.y * Mathf.Deg2Rad), 0.0f, Mathf.Cos(gameObject.transform.rotation.eulerAngles.y * Mathf.Deg2Rad)).normalized;
+        vec3MoveDirection = new Vector3(Mathf.Sin(gobjCamera.transform.eulerAngles.y * Mathf.Deg2Rad), 0.0f, Mathf.Cos(gobjCamera.transform.eulerAngles.y * Mathf.Deg2Rad)).normalized;
         if (Input.GetKey(KeyCode.W))
         {
+            _animator.SetBool("isWalking", true);
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 gameObject.transform.position += vec3MoveDirection * fSpeedMag * fSpeedBoost * Time.deltaTime;
@@ -69,10 +79,16 @@ public class PlayerMovementTest : MonoBehaviour
 
 
         }
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            _animator.SetBool("isWalking", false);
+        }
 
         fMouseX = Input.GetAxis("Mouse X");
         fMouseY = Input.GetAxis("Mouse Y");
-        gameObject.transform.localEulerAngles += new Vector3(-fMouseY, fMouseX, 0.0f);
+        
+        gameObject.transform.localEulerAngles += new Vector3(0.0f, fMouseX, 0.0f);
+        gobjPlayerHead.transform.localEulerAngles += new Vector3(gameObject.transform.localEulerAngles.x - fMouseY, 0.0f, 0.0f);
         //gameObject.transform.eulerAngles = new Vector3(gameObject.transform.eulerAngles.x, fCameraYAngle, gameObject.transform.eulerAngles.z);
 
 
